@@ -163,14 +163,17 @@ const Navbar = () => {
       <div className="flex items-center">
         <img src="/logo.png" alt="HERMAR Logo" className="h-12 w-auto object-contain" />
       </div>
-      <motion.button
+      <motion.a
+        href="https://wa.me/526361325388?text=Hola%20H%C3%A9ctor,%20vengo%20de%20la%20Landing%20Page%20y%20me%20gustar%C3%ADa%20agendar%20una%20Demo%20de%20sus%20servicios."
+        target="_blank"
+        rel="noopener noreferrer"
         variants={springHover}
         whileHover="hover"
         whileTap="tap"
-        className="relative overflow-hidden px-5 py-2.5 rounded-full bg-brand-dark/20 border border-brand-light/30 text-white text-sm font-medium transition-all hover:bg-brand-dark/40 shadow-[0_0_15px_rgba(12,171,227,0.15)] hover:shadow-[0_0_25px_rgba(12,171,227,0.3)]"
+        className="relative overflow-hidden px-5 py-2.5 rounded-full bg-brand-dark/20 border border-brand-light/30 text-white text-sm font-medium transition-all hover:bg-brand-dark/40 shadow-[0_0_15px_rgba(12,171,227,0.15)] hover:shadow-[0_0_25px_rgba(12,171,227,0.3)] block cursor-pointer"
       >
         <span className="relative z-10">Agendar Demo</span>
-      </motion.button>
+      </motion.a>
     </nav>
   );
 };
@@ -376,14 +379,17 @@ const FinalCTA = () => {
           Lleva tu administración a la nube y automatiza lo repetitivo.
         </motion.h2>
         
-        <motion.button
+        <motion.a
+          href="https://wa.me/526361325388?text=Hola,%20me%20interesa%20agendar%20la%20Auditor%C3%ADa%20Gratuita%20para%20automatizar%20mi%20empresa."
+          target="_blank"
+          rel="noopener noreferrer"
           variants={springHover}
           whileHover="hover"
           whileTap="tap"
-          className="px-12 py-5 rounded-full bg-white text-black font-bold text-lg hover:bg-neutral-200 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)]"
+          className="inline-block px-12 py-5 rounded-full bg-white text-black font-bold text-lg hover:bg-neutral-200 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] cursor-pointer"
         >
           Agendar Auditoría Gratuita
-        </motion.button>
+        </motion.a>
       </div>
     </section>
   );

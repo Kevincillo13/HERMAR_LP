@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { Bot, LineChart, Users, FileText, ArrowRight, ChevronRight } from 'lucide-react';
+import Globe from 'react-globe.gl';
 
 
 
@@ -31,7 +32,48 @@ const springHover: Variants = {
 };
 
 // --- COMPONENTS ---
+// --- COMPONENTE GLOBO 3D (react-globe.gl) ---
+const HeroGlobe = () => {
+  const [countries, setCountries] = useState({ features: [] });
+  const globeRef = useRef<any>();
 
+  useEffect(() => {
+    // Descargar GeoJSON de países
+    fetch('https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+      .then(res => res.json())
+      .then(setCountries);
+  }, []);
+
+  useEffect(() => {
+    if (globeRef.current) {
+      // Apuntar cámara a México (latitud, longitud, altitud)
+      globeRef.current.pointOfView({ lat: 23.6345, lng: -102.5528, altitude: 2 }, 1000);
+      
+      // Configurar rotación automática
+      globeRef.current.controls().autoRotate = true;
+      globeRef.current.controls().autoRotateSpeed = 0.5;
+    }
+  }, [countries]);
+
+  return (
+    <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none hidden lg:flex items-center justify-center z-0">
+      <Globe
+        ref={globeRef}
+        width={800}
+        height={800}
+        backgroundColor="rgba(0,0,0,0)"
+        polygonsData={countries.features}
+        polygonAltitude={(d: any) => (d.properties.ISO_A2 === 'MX' || d.properties.ADMIN === 'Mexico') ? 0.05 : 0.01}
+        polygonCapColor={(d: any) => (d.properties.ISO_A2 === 'MX' || d.properties.ADMIN === 'Mexico') ? '#0CABE3' : 'rgba(10, 84, 168, 0.2)'}
+        polygonSideColor={() => 'rgba(10, 84, 168, 0.1)'}
+        polygonStrokeColor={() => '#0A54A8'}
+        showAtmosphere={true}
+        atmosphereColor="#0CABE3"
+        atmosphereAltitude={0.15}
+      />
+    </div>
+  );
+};
 
 
 // 2. FÍSICAS DE ANIMACIÓN: Spotlight Hover Effect
@@ -125,53 +167,56 @@ const Navbar = () => {
 // B. Hero Section (Inmersivo)
 const Hero = () => {
   return (
-    <section className="relative pt-40 pb-20 px-6 flex flex-col items-center text-center min-h-screen justify-center overflow-hidden">
-      {/* Background Mesh Gradients */}
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-brand-dark opacity-10 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-light opacity-15 blur-[120px] rounded-full pointer-events-none" />
+    // 1. Contenedor Padre: Ocupa el 100% del ancho (w-full). Aquí va el overflow-hidden.
+    <section className="relative pt-40 pb-20 flex flex-col items-center min-h-screen justify-center overflow-hidden w-full">
 
-      <motion.div 
-        variants={staggerContainer}
-        initial="hidden"
-        animate="show"
-        className="max-w-4xl mx-auto z-10 flex flex-col items-center"
-      >
-        <motion.div variants={fadeUpSpring} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm mb-8">
-          <span className="text-sm font-medium text-neutral-300">✨ Transformación Digital Empresarial</span>
+      {/* 2. Fondos y Globos: Al estar directos en el padre, se expanden sin cortarse */}
+      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-brand-dark opacity-10 blur-[120px] rounded-full pointer-events-none" />
+      <HeroGlobe />
+
+      {/* 3. Contenedor de Contenido: Restringido a max-w-7xl y centrado (mx-auto) */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col items-start text-left">
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          className="max-w-3xl flex flex-col items-start"
+        >
+          <motion.div variants={fadeUpSpring} className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm mb-8">
+            <span className="text-sm font-medium text-neutral-300">✨ Transformación Digital Empresarial</span>
+          </motion.div>
+
+          <motion.h1 variants={fadeUpSpring} className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-none font-display mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-500">
+            Escala tu operación con precisión milimétrica.
+          </motion.h1>
+
+          <motion.p variants={fadeUpSpring} className="text-lg md:text-xl text-neutral-400 max-w-2xl mb-10 leading-relaxed">
+            Digitalización, automatización (RPA), y optimización de procesos contables, financieros y de RRHH para empresas que exigen la excelencia.
+          </motion.p>
+
+          <motion.div variants={fadeUpSpring} className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <motion.button
+              variants={springHover}
+              whileHover="hover"
+              whileTap="tap"
+              className="flex items-center justify-center gap-2 px-8 py-4 w-full sm:w-auto rounded-full bg-brand-dark text-white font-medium shadow-[0_0_30px_rgba(12,171,227,0.3)] hover:shadow-[0_0_40px_rgba(12,171,227,0.5)] transition-shadow duration-300"
+            >
+              Iniciar Transformación <ArrowRight className="w-4 h-4" />
+            </motion.button>
+            <motion.button
+              variants={springHover}
+              whileHover="hover"
+              whileTap="tap"
+              className="px-8 py-4 rounded-full border border-white/10 bg-transparent text-white font-medium hover:bg-white/[0.03] transition-colors w-full sm:w-auto text-center"
+            >
+              Explorar Servicios
+            </motion.button>
+          </motion.div>
         </motion.div>
-        
-        <motion.h1 variants={fadeUpSpring} className="text-5xl md:text-7xl font-extrabold tracking-tighter leading-none font-display mb-6 text-transparent bg-clip-text bg-gradient-to-b from-white to-neutral-500">
-          Escala tu operación con precisión milimétrica.
-        </motion.h1>
-        
-        <motion.p variants={fadeUpSpring} className="text-lg md:text-xl text-neutral-400 max-w-2xl mb-10 leading-relaxed">
-          Digitalización, automatización (RPA), y optimización de procesos contables, financieros y de RRHH para empresas que exigen la excelencia.
-        </motion.p>
-        
-        <motion.div variants={fadeUpSpring} className="flex flex-col sm:flex-row items-center gap-4">
-          <motion.button 
-            variants={springHover}
-            whileHover="hover"
-            whileTap="tap"
-            className="flex items-center gap-2 px-8 py-4 rounded-full bg-brand-dark text-white font-medium shadow-[0_0_30px_rgba(12,171,227,0.3)] hover:shadow-[0_0_40px_rgba(12,171,227,0.5)] transition-shadow duration-300"
-          >
-            Iniciar Transformación <ArrowRight className="w-4 h-4" />
-          </motion.button>
-          <motion.button 
-            variants={springHover}
-            whileHover="hover"
-            whileTap="tap"
-            className="px-8 py-4 rounded-full border border-white/10 bg-transparent text-white font-medium hover:bg-white/[0.03] transition-colors"
-          >
-            Explorar Servicios
-          </motion.button>
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 };
-
-
 
 // C. Bento Grid Section (Características/Servicios)
 const BentoGrid = () => {

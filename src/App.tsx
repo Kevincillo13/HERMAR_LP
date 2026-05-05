@@ -46,7 +46,7 @@ const HeroGlobe = () => {
 
   useEffect(() => {
     if (globeRef.current) {
-      // Apuntar cámara a México (latitud, longitud, altitud)
+      // Posición inicial
       globeRef.current.pointOfView({ lat: 23.6345, lng: -102.5528, altitude: 2 }, 1000);
       
       // Configurar rotación automática
@@ -55,21 +55,41 @@ const HeroGlobe = () => {
     }
   }, [countries]);
 
+  const handleMouseEnter = () => {
+    if (globeRef.current) {
+      // Detener rotación y centrar en México suavemente
+      globeRef.current.controls().autoRotate = false;
+      globeRef.current.pointOfView({ lat: 23.6345, lng: -102.5528, altitude: 2 }, 1000);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (globeRef.current) {
+      // Reanudar rotación automática
+      globeRef.current.controls().autoRotate = true;
+    }
+  };
+
   return (
-    <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-[800px] h-[800px] pointer-events-none hidden lg:flex items-center justify-center z-0">
+    // pointer-events-auto permite detectar el mouse
+    // agregamos transición de hover:scale-105 para dar feedback visual
+    <div 
+      className="absolute right-[-60%] md:-right-20 top-1/2 -translate-y-1/2 w-[600px] h-[600px] lg:w-[800px] lg:h-[800px] pointer-events-auto flex items-center justify-center z-0 opacity-30 md:opacity-100 mix-blend-screen md:mix-blend-normal transition-transform duration-700 ease-out hover:scale-105"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <Globe
         ref={globeRef}
-        width={800}
-        height={800}
+        width={typeof window !== 'undefined' && window.innerWidth < 1024 ? 600 : 800}
+        height={typeof window !== 'undefined' && window.innerWidth < 1024 ? 600 : 800}
         backgroundColor="rgba(0,0,0,0)"
+
+        // Configuración de Países y resaltado fijo para México
         polygonsData={countries.features}
         polygonAltitude={(d: any) => (d.properties.ISO_A2 === 'MX' || d.properties.ADMIN === 'Mexico') ? 0.05 : 0.01}
         polygonCapColor={(d: any) => (d.properties.ISO_A2 === 'MX' || d.properties.ADMIN === 'Mexico') ? '#0CABE3' : 'rgba(10, 84, 168, 0.2)'}
         polygonSideColor={() => 'rgba(10, 84, 168, 0.1)'}
         polygonStrokeColor={() => '#0A54A8'}
-        showAtmosphere={true}
-        atmosphereColor="#0CABE3"
-        atmosphereAltitude={0.15}
       />
     </div>
   );
@@ -139,18 +159,9 @@ const FeatureCard = ({ title, description, icon: Icon }: { title: string, descri
 // A. Navbar (Sticky & Glass)
 const Navbar = () => {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-background/50 border-b border-white/5">
-      <div className="flex items-center gap-8">
-        <div className="flex items-center">
-          <img src="/logo.png" alt="HERMAR Logo" className="h-8 w-auto object-contain" />
-        </div>
-        <div className="hidden md:flex items-center gap-6">
-          {['Servicios', 'Soluciones', 'Casos de Éxito', 'Compañía'].map((item) => (
-            <a key={item} href="#" className="text-sm font-medium text-neutral-400 hover:text-white transition-colors duration-200">
-              {item}
-            </a>
-          ))}
-        </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-6 backdrop-blur-md bg-background/50 border-b border-white/5">
+      <div className="flex items-center">
+        <img src="/logo.png" alt="HERMAR Logo" className="h-12 w-auto object-contain" />
       </div>
       <motion.button
         variants={springHover}

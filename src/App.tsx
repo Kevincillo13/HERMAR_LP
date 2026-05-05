@@ -2,6 +2,9 @@ import React, { useState, useRef } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { Bot, LineChart, Users, FileText, ArrowRight, ChevronRight } from 'lucide-react';
 
+
+
+
 // --- ANIMATION VARIANTS ---
 const staggerContainer: Variants = {
   hidden: { opacity: 0 },
@@ -15,8 +18,8 @@ const staggerContainer: Variants = {
 
 const fadeUpSpring: Variants = {
   hidden: { y: 20, opacity: 0 },
-  show: { 
-    y: 0, 
+  show: {
+    y: 0,
     opacity: 1,
     transition: { type: "spring", stiffness: 400, damping: 30 }
   }
@@ -28,6 +31,8 @@ const springHover: Variants = {
 };
 
 // --- COMPONENTS ---
+
+
 
 // 2. FÍSICAS DE ANIMACIÓN: Spotlight Hover Effect
 const FeatureCard = ({ title, description, icon: Icon }: { title: string, description: string, icon: React.ElementType }) => {
@@ -94,8 +99,8 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-background/50 border-b border-white/5">
       <div className="flex items-center gap-8">
-        <div className="text-2xl font-extrabold tracking-tighter font-display bg-clip-text text-transparent bg-gradient-to-r from-white to-brand-light">
-          HERMAR
+        <div className="flex items-center">
+          <img src="/logo.png" alt="HERMAR Logo" className="h-8 w-auto object-contain" />
         </div>
         <div className="hidden md:flex items-center gap-6">
           {['Servicios', 'Soluciones', 'Casos de Éxito', 'Compañía'].map((item) => (
@@ -105,7 +110,7 @@ const Navbar = () => {
           ))}
         </div>
       </div>
-      <motion.button 
+      <motion.button
         variants={springHover}
         whileHover="hover"
         whileTap="tap"
@@ -166,11 +171,13 @@ const Hero = () => {
   );
 };
 
+
+
 // C. Bento Grid Section (Características/Servicios)
 const BentoGrid = () => {
   return (
     <section className="py-32 px-6 max-w-7xl mx-auto relative z-10">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
@@ -185,7 +192,7 @@ const BentoGrid = () => {
         </p>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         variants={staggerContainer}
         initial="hidden"
         whileInView="show"
@@ -193,29 +200,29 @@ const BentoGrid = () => {
         className="grid grid-cols-1 md:grid-cols-3 gap-4 md:auto-rows-[300px]"
       >
         <div className="md:col-span-2 md:row-span-1">
-          <FeatureCard 
-            title="Automatización de Tareas (RPA)" 
+          <FeatureCard
+            title="Automatización de Tareas (RPA)"
             description="Elimina la fricción operativa. Diseñamos robots de software que ejecutan procesos repetitivos con 100% de precisión y cero fatiga."
             icon={Bot}
           />
         </div>
         <div className="md:col-span-1 md:row-span-2">
-          <FeatureCard 
-            title="Gestión Financiera" 
+          <FeatureCard
+            title="Gestión Financiera"
             description="Visibilidad total. Conciliaciones bancarias automatizadas, reportes en tiempo real y proyecciones basadas en datos puros."
             icon={LineChart}
           />
         </div>
         <div className="md:col-span-1 md:row-span-1">
-          <FeatureCard 
-            title="Recursos Humanos" 
+          <FeatureCard
+            title="Recursos Humanos"
             description="Nóminas inteligentes, onboarding automatizado y gestión del talento centralizada en una única fuente de verdad."
             icon={Users}
           />
         </div>
         <div className="md:col-span-1 md:row-span-1">
-          <FeatureCard 
-            title="Procesamiento Documental" 
+          <FeatureCard
+            title="Procesamiento Documental"
             description="Extracción de datos mediante IA. Convierte facturas, recibos y contratos en datos estructurados al instante."
             icon={FileText}
           />
@@ -231,9 +238,9 @@ const CTAAndFooter = () => {
     <footer className="relative pt-32 border-t border-white/5 mt-20 overflow-hidden">
       {/* Background Glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[300px] bg-brand-dark/20 blur-[150px] rounded-t-full pointer-events-none" />
-      
+
       <div className="max-w-4xl mx-auto px-6 text-center mb-32 relative z-10">
-        <motion.h2 
+        <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -241,7 +248,7 @@ const CTAAndFooter = () => {
         >
           Listo para el siguiente nivel
         </motion.h2>
-        <motion.p 
+        <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -250,7 +257,7 @@ const CTAAndFooter = () => {
         >
           Únete a las empresas que ya están definiendo el futuro operativo.
         </motion.p>
-        <motion.button 
+        <motion.button
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

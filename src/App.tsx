@@ -35,7 +35,7 @@ const springHover: Variants = {
 // --- COMPONENTE GLOBO 3D (react-globe.gl) ---
 const HeroGlobe = () => {
   const [countries, setCountries] = useState({ features: [] });
-  const globeRef = useRef<any>();
+  const globeRef = useRef<any>(null);
 
   useEffect(() => {
     // Descargar GeoJSON de países

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { Bot, LineChart, Users, FileText, ArrowRight, ChevronRight } from 'lucide-react';
+import { Bot, LineChart, Users, FileText, ArrowRight, ChevronRight, Briefcase, Globe as GlobeIcon, Database } from 'lucide-react';
 import Globe from 'react-globe.gl';
 
 
@@ -229,8 +229,40 @@ const Hero = () => {
   );
 };
 
-// C. Bento Grid Section (Características/Servicios)
-const BentoGrid = () => {
+// 1. TechStackTicker (Prueba de Autoridad)
+const TechStackTicker = () => {
+  const techs = ["Python", "SAP", "Excel Avanzado", "Puppeteer", "Web Automation", "SQL Databases", "RPA Solutions"];
+  
+  return (
+    <div className="w-full py-12 border-y border-white/5 bg-white/[0.01] overflow-hidden relative">
+      <div className="max-w-7xl mx-auto px-6 mb-6">
+        <p className="text-xs font-mono uppercase tracking-[0.3em] text-neutral-500 text-center">
+          Integración fluida con tu ecosistema tecnológico
+        </p>
+      </div>
+      
+      <div className="flex overflow-hidden group">
+        <motion.div 
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          className="flex whitespace-nowrap gap-20 items-center pr-20"
+        >
+          {[...techs, ...techs].map((tech, idx) => (
+            <span 
+              key={idx} 
+              className="text-2xl md:text-3xl font-display font-bold text-neutral-700 hover:text-brand-light transition-colors duration-500 cursor-default"
+            >
+              {tech}
+            </span>
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+// C. Services Bento Grid (El Core del Negocio)
+const ServicesBento = () => {
   return (
     <section className="py-32 px-6 max-w-7xl mx-auto relative z-10">
       <motion.div
@@ -253,34 +285,41 @@ const BentoGrid = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-100px" }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4 md:auto-rows-[300px]"
+        className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[350px]"
       >
+        {/* Tarjeta 1 (Destacada) */}
         <div className="md:col-span-2 md:row-span-1">
           <FeatureCard
-            title="Automatización de Tareas (RPA)"
-            description="Elimina la fricción operativa. Diseñamos robots de software que ejecutan procesos repetitivos con 100% de precisión y cero fatiga."
-            icon={Bot}
+            title="Análisis Documental y PDFs"
+            description="Extracción inteligente de datos de facturas y reportes pesados. Convertimos documentos no estructurados en bases de datos limpias sin intervención humana."
+            icon={FileText}
           />
         </div>
+        
+        {/* Tarjeta 2 */}
         <div className="md:col-span-1 md:row-span-2">
           <FeatureCard
-            title="Gestión Financiera"
-            description="Visibilidad total. Conciliaciones bancarias automatizadas, reportes en tiempo real y proyecciones basadas en datos puros."
-            icon={LineChart}
+            title="Gestión de Tickets"
+            description="Automatización de flujos para departamentos de Global Business Services. Clasificación, enrutamiento y resolución rápida."
+            icon={Briefcase}
           />
         </div>
+
+        {/* Tarjeta 3 */}
         <div className="md:col-span-1 md:row-span-1">
           <FeatureCard
-            title="Recursos Humanos"
-            description="Nóminas inteligentes, onboarding automatizado y gestión del talento centralizada en una única fuente de verdad."
-            icon={Users}
+            title="Automatización Web"
+            description="Scripts a medida para interactuar con portales profesionales heredados, extrayendo información crítica al instante."
+            icon={GlobeIcon}
           />
         </div>
+
+        {/* Tarjeta 4 */}
         <div className="md:col-span-1 md:row-span-1">
           <FeatureCard
-            title="Procesamiento Documental"
-            description="Extracción de datos mediante IA. Convierte facturas, recibos y contratos en datos estructurados al instante."
-            icon={FileText}
+            title="Normalización Financiera"
+            description="Sustituimos el caos de macros en Excel por arquitecturas de datos sólidas y normalizadas para el área contable."
+            icon={Database}
           />
         </div>
       </motion.div>
@@ -288,53 +327,89 @@ const BentoGrid = () => {
   );
 };
 
-// D. Call To Action Final & Footer
-const CTAAndFooter = () => {
-  return (
-    <footer className="relative pt-32 border-t border-white/5 mt-20 overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[300px] bg-brand-dark/20 blur-[150px] rounded-t-full pointer-events-none" />
+// 3. MetricsROI (El Cierre Analítico)
+const MetricsROI = () => {
+  const metrics = [
+    { value: "99%", label: "Precisión en el procesamiento de datos" },
+    { value: "10x", label: "Aceleración en ciclos operativos contables" },
+    { value: "24/7", label: "Disponibilidad de procesos robotizados" }
+  ];
 
-      <div className="max-w-4xl mx-auto px-6 text-center mb-32 relative z-10">
-        <motion.h2
+  return (
+    <section className="py-32 px-6 max-w-7xl mx-auto relative z-10 border-t border-white/5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+        {metrics.map((metric, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.1, type: "spring", stiffness: 200 }}
+          >
+            <h2 className="text-7xl md:text-8xl font-black font-display tracking-tighter mb-4 bg-gradient-to-b from-brand-light to-white text-transparent bg-clip-text">
+              {metric.value}
+            </h2>
+            <p className="text-neutral-400 font-medium max-w-[200px] mx-auto text-sm uppercase tracking-widest leading-relaxed">
+              {metric.label}
+            </p>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+// D. Final CTA & Professional Footer
+const FinalCTA = () => {
+  return (
+    <section className="py-40 px-6 relative overflow-hidden">
+      {/* Glow Effect */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-dark/20 blur-[120px] rounded-full pointer-events-none" />
+      
+      <div className="max-w-4xl mx-auto text-center relative z-10">
+        <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-extrabold font-display tracking-tighter text-white mb-6"
+          className="text-4xl md:text-6xl font-black font-display tracking-tighter text-white mb-8"
         >
-          Listo para el siguiente nivel
+          Lleva tu administración a la nube y automatiza lo repetitivo.
         </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-neutral-400 text-lg mb-10"
-        >
-          Únete a las empresas que ya están definiendo el futuro operativo.
-        </motion.p>
+        
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
+          variants={springHover}
           whileHover="hover"
           whileTap="tap"
-          variants={springHover}
-          className="px-10 py-4 rounded-full bg-white text-black font-bold hover:bg-neutral-200 transition-colors shadow-xl"
+          className="px-12 py-5 rounded-full bg-white text-black font-bold text-lg hover:bg-neutral-200 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)]"
         >
-          Contactar a Ventas
+          Agendar Auditoría Gratuita
         </motion.button>
       </div>
+    </section>
+  );
+};
 
-      <div className="border-t border-white/10 flex flex-col md:flex-row items-center justify-between px-6 py-8 max-w-7xl mx-auto text-sm text-neutral-500 relative z-10">
-        <div className="mb-4 md:mb-0">
-          © {new Date().getFullYear()} HERMAR Business Solutions. Todos los derechos reservados.
+const Footer = () => {
+  return (
+    <footer className="border-t border-white/5 py-12 px-6">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="flex flex-col items-center md:items-start gap-2">
+          <h3 className="text-xl font-display font-bold text-white tracking-tight">
+            HERMAR Business Solutions
+          </h3>
+          <p className="text-neutral-500 text-sm">
+            © {new Date().getFullYear()} Todos los derechos reservados.
+          </p>
         </div>
-        <div className="flex items-center gap-6">
-          <a href="#" className="hover:text-white transition-colors">Políticas de Privacidad</a>
-          <a href="#" className="hover:text-white transition-colors">Términos de Servicio</a>
-          <a href="#" className="hover:text-white transition-colors">Contacto</a>
+        
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs font-mono uppercase tracking-[0.2em] text-neutral-400">
+          <span className="hover:text-brand-light transition-colors">Innovación</span>
+          <span className="text-white/10">•</span>
+          <span className="hover:text-brand-light transition-colors">Calidad</span>
+          <span className="text-white/10">•</span>
+          <span className="hover:text-brand-light transition-colors">Honestidad</span>
+          <span className="text-white/10">•</span>
+          <span className="hover:text-brand-light transition-colors">Eficiencia</span>
         </div>
       </div>
     </footer>
@@ -348,9 +423,12 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <BentoGrid />
+        <TechStackTicker />
+        <ServicesBento />
+        <MetricsROI />
+        <FinalCTA />
       </main>
-      <CTAAndFooter />
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, type Variants } from 'framer-motion';
-import { Bot, LineChart, Users, FileText, ArrowRight, ChevronRight, Briefcase, Globe as GlobeIcon, Database } from 'lucide-react';
+import { FileText, ArrowRight, ChevronRight, Briefcase, Globe as GlobeIcon, Database } from 'lucide-react';
 import Globe from 'react-globe.gl';
 
 

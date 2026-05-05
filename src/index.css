@@ -5,6 +5,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-neutral-400 font-sans antialiased overflow-x-hidden selection:bg-brand-light/30 selection:text-white;
   }

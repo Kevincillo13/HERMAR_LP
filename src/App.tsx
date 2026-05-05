@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, type Variants } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useMotionTemplate, type Variants } from 'framer-motion';
 import { FileText, ArrowRight, ChevronRight, Briefcase, Globe as GlobeIcon, Database } from 'lucide-react';
 import Globe from 'react-globe.gl';
 
@@ -98,36 +98,44 @@ const HeroGlobe = () => {
 
 // 2. FÍSICAS DE ANIMACIÓN: Spotlight Hover Effect
 const FeatureCard = ({ title, description, icon: Icon }: { title: string, description: string, icon: React.ElementType }) => {
-  const divRef = useRef<HTMLDivElement>(null);
+  const divRef = useRef<HTMLAnchorElement>(null);
   const [isFocused, setIsFocused] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
   const [opacity, setOpacity] = useState(0);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!divRef.current || isFocused) return;
-    const rect = divRef.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    const { left, top } = divRef.current.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+    mouseX.set(x);
+    mouseY.set(y);
   };
 
-  const handleFocus = () => {
-    setIsFocused(true);
-    setOpacity(1);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-    setOpacity(0);
-  };
-
+  const handleFocus = () => { setIsFocused(true); setOpacity(1); };
+  const handleBlur = () => { setIsFocused(false); setOpacity(0); };
   const handleMouseEnter = () => setOpacity(1);
   const handleMouseLeave = () => setOpacity(0);
 
+  // 3D Tilt calculations
+  const rotateX = useTransform(mouseY, [0, 400], [5, -5]);
+  const rotateY = useTransform(mouseX, [0, 600], [-5, 5]);
+
   return (
-    <motion.div
+    <motion.a
+      href={`https://wa.me/526361325388?text=Hola%20H%C3%A9ctor,%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20el%20servicio%20de%20${encodeURIComponent(title)}.`}
+      target="_blank"
+      rel="noopener noreferrer"
       variants={fadeUpSpring}
-      whileHover="hover"
-      whileTap="tap"
-      className="relative overflow-hidden rounded-3xl bg-white/[0.02] border border-white/5 p-8 flex flex-col justify-between h-full backdrop-blur-xl group cursor-pointer"
+      style={{
+        rotateX: isFocused ? 0 : rotateX,
+        rotateY: isFocused ? 0 : rotateY,
+        transformStyle: "preserve-3d"
+      }}
+      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+      whileTap={{ scale: 0.98 }}
+      className="relative overflow-hidden rounded-[2rem] bg-white/[0.02] border border-white/10 p-10 flex flex-col justify-between h-full backdrop-blur-2xl group cursor-pointer block transition-colors hover:border-brand-light/30"
       ref={divRef}
       onMouseMove={handleMouseMove}
       onFocus={handleFocus}
@@ -135,24 +143,31 @@ const FeatureCard = ({ title, description, icon: Icon }: { title: string, descri
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 rounded-3xl"
+      {/* Dynamic Spotlight */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-500 rounded-[2rem]"
         style={{
           opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, rgba(12,171,227,0.15), transparent 40%)`,
+          background: useMotionTemplate`radial-gradient(600px circle at ${mouseX}px ${mouseY}px, rgba(12,171,227,0.1), transparent 80%)`,
         }}
       />
-      <div className="z-10 relative">
-        <div className="w-12 h-12 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center mb-6 transition-colors duration-300 group-hover:bg-white/[0.1]">
-          <Icon className="w-6 h-6 text-brand-light" />
+      
+      <div className="z-10 relative" style={{ transform: "translateZ(50px)" }}>
+        <div className="w-14 h-14 rounded-2xl bg-brand-dark/20 border border-brand-light/20 flex items-center justify-center mb-8 transition-all duration-500 group-hover:scale-110 group-hover:bg-brand-dark/40 group-hover:border-brand-light/50 group-hover:shadow-[0_0_30px_rgba(12,171,227,0.2)]">
+          <Icon className="w-7 h-7 text-brand-light" />
         </div>
-        <h3 className="text-xl font-bold font-display text-white mb-3 tracking-tight">{title}</h3>
-        <p className="text-neutral-400 leading-relaxed text-sm">{description}</p>
+        <h3 className="text-2xl font-bold font-display text-white mb-4 tracking-tight group-hover:text-brand-light transition-colors">
+          {title}
+        </h3>
+        <p className="text-neutral-400 leading-relaxed text-base group-hover:text-neutral-300 transition-colors">
+          {description}
+        </p>
       </div>
-      <div className="z-10 mt-8 relative flex items-center text-sm font-medium text-brand-light opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-        Conocer más <ChevronRight className="w-4 h-4 ml-1" />
+
+      <div className="z-10 mt-10 relative flex items-center text-sm font-bold uppercase tracking-widest text-brand-light opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+        <span className="mr-2">Saber más</span> <ChevronRight className="w-4 h-4" />
       </div>
-    </motion.div>
+    </motion.a>
   );
 };
 
@@ -209,22 +224,26 @@ const Hero = () => {
           </motion.p>
 
           <motion.div variants={fadeUpSpring} className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            <motion.button
+            <motion.a
+              href="https://wa.me/526361325388?text=Hola%20H%C3%A9ctor,%20vengo%20de%20la%20Landing%20Page%20y%20me%20gustar%C3%ADa%20iniciar%20el%20proceso%20de%20Transformaci%C3%B3n%20Digital%20en%20mi%20empresa."
+              target="_blank"
+              rel="noopener noreferrer"
               variants={springHover}
               whileHover="hover"
               whileTap="tap"
-              className="flex items-center justify-center gap-2 px-8 py-4 w-full sm:w-auto rounded-full bg-brand-dark text-white font-medium shadow-[0_0_30px_rgba(12,171,227,0.3)] hover:shadow-[0_0_40px_rgba(12,171,227,0.5)] transition-shadow duration-300"
+              className="flex items-center justify-center gap-2 px-8 py-4 w-full sm:w-auto rounded-full bg-brand-dark text-white font-medium shadow-[0_0_30px_rgba(12,171,227,0.3)] hover:shadow-[0_0_40px_rgba(12,171,227,0.5)] transition-shadow duration-300 cursor-pointer"
             >
               Iniciar Transformación <ArrowRight className="w-4 h-4" />
-            </motion.button>
-            <motion.button
+            </motion.a>
+            <motion.a
+              href="#servicios"
               variants={springHover}
               whileHover="hover"
               whileTap="tap"
-              className="px-8 py-4 rounded-full border border-white/10 bg-transparent text-white font-medium hover:bg-white/[0.03] transition-colors w-full sm:w-auto text-center"
+              className="px-8 py-4 rounded-full border border-white/10 bg-transparent text-white font-medium hover:bg-white/[0.03] transition-colors w-full sm:w-auto text-center cursor-pointer"
             >
               Explorar Servicios
-            </motion.button>
+            </motion.a>
           </motion.div>
         </motion.div>
       </div>
@@ -267,19 +286,54 @@ const TechStackTicker = () => {
 // C. Services Bento Grid (El Core del Negocio)
 const ServicesBento = () => {
   return (
-    <section className="py-32 px-6 max-w-7xl mx-auto relative z-10">
+    <section id="servicios" className="py-40 px-6 max-w-7xl mx-auto relative z-10 scroll-mt-24 overflow-hidden">
+      
+      {/* --- BACKGROUND TECH ELEMENTS --- */}
+      {/* 1. Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+      
+      {/* 2. Animated Energy Beams */}
+      <motion.div 
+        animate={{ 
+          top: ["-10%", "110%"],
+          opacity: [0, 1, 0]
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        className="absolute left-[20%] w-[1px] h-[20%] bg-gradient-to-b from-transparent via-brand-light/40 to-transparent blur-sm pointer-events-none"
+      />
+      <motion.div 
+        animate={{ 
+          top: ["110%", "-10%"],
+          opacity: [0, 1, 0]
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear", delay: 2 }}
+        className="absolute right-[15%] w-[1px] h-[30%] bg-gradient-to-b from-transparent via-brand-light/30 to-transparent blur-sm pointer-events-none"
+      />
+
+      {/* 3. Floating Glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-dark/10 blur-[150px] rounded-full pointer-events-none" />
+
+      {/* --- CONTENT --- */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ type: "spring", stiffness: 400, damping: 30 }}
-        className="mb-16 md:text-center"
+        className="mb-24 md:text-center relative z-10"
       >
-        <h2 className="text-3xl md:text-5xl font-extrabold font-display tracking-tighter text-white mb-4">
-          Automatización a la medida de tu realidad
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand-light/20 bg-brand-light/5 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-light mb-6">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-light opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-light"></span>
+          </span>
+          Servicios Especializados
+        </div>
+        <h2 className="text-4xl md:text-6xl font-black font-display tracking-tighter text-white mb-6 leading-tight">
+          Automatización a la medida <br className="hidden md:block" /> 
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-white">de tu realidad</span>
         </h2>
-        <p className="text-neutral-400 max-w-2xl mx-auto text-lg">
-          Arquitectura modular para modernizar cada área crítica de tu negocio.
+        <p className="text-neutral-400 max-w-2xl mx-auto text-xl leading-relaxed">
+          Arquitectura modular para modernizar cada área crítica de tu negocio con tecnología de vanguardia.
         </p>
       </motion.div>
 
@@ -288,13 +342,13 @@ const ServicesBento = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-100px" }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6 md:auto-rows-[350px]"
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 md:auto-rows-[400px] relative z-10"
       >
         {/* Tarjeta 1 (Destacada) */}
         <div className="md:col-span-2 md:row-span-1">
           <FeatureCard
             title="Análisis Documental y PDFs"
-            description="Extracción inteligente de datos de facturas y reportes pesados. Convertimos documentos no estructurados en bases de datos limpias sin intervención humana."
+            description="Extracción inteligente de datos de facturas y reportes pesados. Convertimos documentos no estructurados en bases de datos limpias sin intervención humana, reduciendo errores en un 99%."
             icon={FileText}
           />
         </div>
@@ -303,7 +357,7 @@ const ServicesBento = () => {
         <div className="md:col-span-1 md:row-span-2">
           <FeatureCard
             title="Gestión de Tickets"
-            description="Automatización de flujos para departamentos de Global Business Services. Clasificación, enrutamiento y resolución rápida."
+            description="Automatización de flujos para departamentos de Global Business Services. Clasificación inteligente, enrutamiento dinámico y resolución acelerada mediante agentes digitales."
             icon={Briefcase}
           />
         </div>
@@ -312,7 +366,7 @@ const ServicesBento = () => {
         <div className="md:col-span-1 md:row-span-1">
           <FeatureCard
             title="Automatización Web"
-            description="Scripts a medida para interactuar con portales profesionales heredados, extrayendo información crítica al instante."
+            description="Agentes autónomos diseñados para interactuar con portales profesionales heredados, extrayendo y procesando información crítica en tiempo real."
             icon={GlobeIcon}
           />
         </div>
@@ -321,7 +375,7 @@ const ServicesBento = () => {
         <div className="md:col-span-1 md:row-span-1">
           <FeatureCard
             title="Normalización Financiera"
-            description="Sustituimos el caos de macros en Excel por arquitecturas de datos sólidas y normalizadas para el área contable."
+            description="Sustituimos el caos de macros en Excel por arquitecturas de datos sólidas, escalables y normalizadas para el área contable y fiscal."
             icon={Database}
           />
         </div>
